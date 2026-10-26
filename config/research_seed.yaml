@@ -1,0 +1,62 @@
+# Seed entries for the research log (loaded once by `pipeline init`).
+- category: data
+  title: "Industry choice: consumer internet & app platforms"
+  body: |
+    It is the only sector where at least three independent free operational signals are reachable: public job-board APIs, App Store ids and Wikipedia, on top of SEC filings, insider data and prices.
+    Caveat: it is also the sector most heavily covered by paid alt data, so the expected free-data edge is small.
+    Second-industry candidate: semis via Taiwan MOPS monthly revenue (untested in the literature). See RESEARCH.md section 1.
+- category: data
+  title: "Universe: 29 hand-verified core names + 41 extended names"
+  body: |
+    Excluded:
+    - SPOT: foreign private issuer, so no 10-Q or 8-K Item 2.02.
+    - ROKU and BMBL: pending acquisitions as of 2026-10.
+    - GRPN and U: weak fits.
+    Extended names were added for statistical power. Their Wikipedia titles are resolved from Wikidata, and they are not hand-verified.
+- category: signal
+  title: "Pre-registered signal directions set from the literature before any data was collected"
+  body: |
+    Signs and priors are in config/model.yaml.
+    - peer_early_reaction is NEGATIVE (Thomas & Zhang 2008 overreaction).
+    - peer_early_surprise is positive (Ramnath 2002).
+    - Insider purchases are positive; the opportunistic definition follows Cohen, Malloy & Pomorski (2012).
+    - Wikipedia has no prior evidence; it is tested as a novel hypothesis.
+- category: data
+  title: "Prospective-only signals: job postings, App Store ratings, live option quotes"
+  body: |
+    These sources have no free history, so collection starts now.
+    They need several quarters of announcements before they can be evaluated, and they are excluded from historical backtests by design.
+- category: failed_hypothesis
+  title: "Google Trends not usable at $0 in 2026"
+  body: |
+    pytrends was archived on 2025-04-17 and fails with 429s.
+    The official Google Trends API is alpha-only, for approved testers.
+    The best-documented free consumer signal (product-level search, Da, Engelberg & Gao) is therefore not implemented. Applying for alpha access is a user decision.
+- category: model
+  title: "Opportunity score is a percentile rank, not a probability"
+  body: |
+    Each signal is z-scored against its own past distribution, then combined with equal weights in the pre-registered direction and ranked against past composites.
+    A beat probability is shown only if a logistic calibration improves the out-of-sample Brier score, with the 90% bootstrap CI above zero and at least 100 test events.
+- category: model
+  title: "Options analysis labelled HYPOTHETICAL until real quotes accumulate"
+  body: |
+    No free historical option quotes exist with bid/ask and IV:
+    - Massive/Polygon's free tier has end-of-day bars only.
+    - Alpha Vantage allows 25 requests a day, and whether options are on the free tier is contested.
+    The scenario model uses real stock moves and modelled option prices. Real chains are snapshotted before each upcoming announcement.
+    The literature finds buying options through announcements loses on average.
+- category: data
+  title: "Verified API quirks (2026-10-26)"
+  body: |
+    - SEC acceptanceDateTime is true UTC.
+    - Insider dataset zips moved to /files/datastandardsinnovation/ from 2026Q2.
+    - yfinance 1.7 defaults to auto_adjust=True; we pass False.
+    - Yahoo's earnings dates are now HTML-scraped and capped at 100.
+    - Apple top-grossing RSS was removed.
+    - Stooq needs an API key.
+    Details are in docs/api_spec.md.
+- category: ops
+  title: "Build session could not reach live data sources"
+  body: |
+    The cloud build workspace allows only package registries and GitHub, and the linked Mac was offline during the session.
+    The code was validated on labelled synthetic fixtures. The first live collection is pending on the user's machine.

@@ -1,0 +1,76 @@
+name: earnsignal daily
+
+# Runs the collectors, grades past rankings and re-ranks upcoming earnings.
+# The SQLite database lives in the `data-latest` release (see earnsignal/remote.py).
+on:
+  schedule:
+    - cron: "37 12 * * 1-6"   # 12:37 UTC Mon-Sat = 08:37 ET in summer (07:37 in winter), before the open
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "daily = incremental; full = first load / repair; backtest = rebuild backtest + scores only"
+        type: choice
+        options: [daily, full, backtest]
+        default: daily
+
+concurrency:
+  group: earnsignal-db        # never let two runs write the database at once
+  cancel-in-progress: false
+
+permissions:
+  contents: write             # needed to read/write the release that stores the database
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      EARNSIGNAL_CONTACT: ${{ secrets.EARNSIGNAL_CONTACT }}
+      TIINGO_API_KEY: ${{ secrets.TIINGO_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+      TZ: America/New_York
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Check the SEC contact secret
+        run: |
+          if [ -z "$EARNSIGNAL_CONTACT" ]; then
+            echo "::error::Add the repository secret EARNSIGNAL_CONTACT (e.g. 'Your Name you@example.com'). SEC and Wikimedia require it."
+            exit 1
+          fi
+
+      - name: Restore database
+        run: python -m earnsignal.remote download
+
+      - name: Run pipeline
+        run: |
+          MODE="${{ github.event.inputs.mode || 'daily' }}"
+          echo "Mode: $MODE"
+          python -m earnsignal.pipeline init
+          case "$MODE" in
+            full)     python -m earnsignal.pipeline collect
+                      python -m earnsignal.pipeline backtest
+                      python -m earnsignal.pipeline score ;;
+            backtest) python -m earnsignal.pipeline backtest
+                      python -m earnsignal.pipeline score ;;
+            *)        python -m earnsignal.pipeline daily ;;
+          esac
+
+      - name: Save database
+        if: success() || failure()   # keep partial progress, but not on cancellation
+        run: python -m earnsignal.remote upload
+
+      - name: Summary
+        if: success() || failure()
+        run: |
+          python -m earnsignal.pipeline status | tee status.txt
+          { echo '### earnsignal run'; echo '```'; cat status.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

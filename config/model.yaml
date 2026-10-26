@@ -1,0 +1,124 @@
+# Signal definitions and PRE-REGISTERED hypotheses.
+#
+# Primary target: the market-adjusted return over the announcement window
+# (car_ann). Secondary targets: EPS surprise vs consensus and vs a seasonal
+# random walk (SUE), and revenue-growth surprise.
+#
+# `sign` is the direction we expect BEFORE seeing any of our own backtest
+# results (+1: higher value -> more positive announcement reaction / beat).
+# Signs were set from the published literature (RESEARCH.md, section 2) on
+# 2026-10-26, before any data was collected. Do not flip a sign after looking
+# at results; record the failed hypothesis in the research log instead.
+# `prior` summarizes the strength of outside evidence: strong / mixed / weak / none.
+#
+# `kind`:
+#   baseline    - conventional, non-alternative signal used as a benchmark
+#   alt         - alternative-data signal (the hypothesis under test)
+# `history`:
+#   backtest    - point-in-time history is available, so it can be backtested
+#   prospective - no free history; collected from now on and tested forward
+
+features:
+  prior_sue:
+    sign: 1
+    kind: baseline
+    history: backtest
+    prior: mixed (SUE persistence exists but has decayed; Kettell, McInnis & Zhao 2022)
+    description: Last quarter's standardized unexpected EPS (seasonal random walk). Earnings surprises are autocorrelated (Bernard & Thomas 1990).
+  prior_consensus_surprise:
+    sign: 1
+    kind: baseline
+    history: backtest
+    prior: mixed
+    description: Last quarter's EPS surprise vs Yahoo consensus (%), winsorized.
+  rev_accel_prev:
+    sign: 1
+    kind: baseline
+    history: backtest
+    prior: weak
+    description: Change in YoY revenue growth between the two most recently reported quarters.
+  momentum_60d:
+    sign: 1
+    kind: baseline
+    history: backtest
+    prior: weak (benchmark)
+    description: 60-trading-day return before the announcement minus SPY (price momentum benchmark).
+  wiki_yoy_rel:
+    sign: 1
+    kind: alt
+    history: backtest
+    prior: none (no study links Wikipedia views to earnings surprises; novel hypothesis)
+    description: YoY change in Wikipedia pageviews (company + flagship product) during the reported fiscal quarter, minus the universe median over the same window.
+  wiki_accel:
+    sign: 1
+    kind: alt
+    history: backtest
+    prior: none
+    description: wiki_yoy_rel this quarter minus wiki_yoy_rel last quarter.
+  peer_early_reaction:
+    sign: -1
+    kind: alt
+    history: backtest
+    prior: "mixed - Thomas & Zhang (2008): late reporters' prices OVERREACT to peers' news and reverse at their own announcement, so the expected sign for the late reporter's announcement return is negative"
+    description: Mean market-adjusted announcement return of same-segment companies that already reported the same fiscal quarter (intra-industry information transfer).
+  universe_early_reaction:
+    sign: -1
+    kind: alt
+    history: backtest
+    prior: none (exploratory extension of Thomas & Zhang to the whole universe)
+    description: Same as peer_early_reaction but across the whole universe (earnings-season tone). Exploratory.
+  peer_early_surprise:
+    sign: 1
+    kind: alt
+    history: backtest
+    prior: "mixed - Ramnath (2002): early announcers' forecast errors predict later announcers' errors and returns (underreaction)"
+    description: Mean consensus EPS surprise (%) of same-segment early reporters this quarter.
+  insider_buyers_90d:
+    sign: 1
+    kind: alt
+    history: backtest
+    prior: strong for purchases in general (Lakonishok & Lee 2001; Jeng, Metrick & Zeckhauser 2003)
+    description: Distinct insiders with open-market purchases (Form 4 code P) filed in the 90 days before the announcement.
+  insider_opp_buyers_90d:
+    sign: 1
+    kind: alt
+    history: backtest
+    prior: "strong - Cohen, Malloy & Pomorski (2012): opportunistic (non-routine) purchases predict the next announcement return; routine trades carry no information"
+    description: Distinct OPPORTUNISTIC insider buyers in the 90 days before the announcement. An insider is routine if they traded in the same calendar month in each of the prior 3 years; opportunistic if they traded in each of the prior 3 years but not in that pattern. Insiders without 3 years of history are not counted.
+  insider_sell_abnormal:
+    sign: -1
+    kind: alt
+    history: backtest
+    prior: weak (information is mainly in purchases, not sales)
+    description: Log ratio of open-market sale value (code S) in the last 90 days to the company's own trailing 2-year average 90-day sales. Exploratory.
+  jobs_growth_28d:
+    sign: 1
+    kind: alt
+    history: prospective
+    prior: "weak for surprises - Gutierrez et al. (2020): postings predict future growth but prices absorb changes within ~2 days"
+    description: 28-day log change in open job postings minus universe median.
+  jobs_gtm_share_chg:
+    sign: 1
+    kind: alt
+    history: prospective
+    prior: none
+    description: 28-day change in the share of postings in sales/GTM and operations roles.
+  app_rating_growth_28d:
+    sign: 1
+    kind: alt
+    history: prospective
+    prior: "mixed - Chen, Liu & Wu (2024) find download growth predicts SUE for apps without visible monetization (paid Sensor Tower data); rating counts are an unvalidated free proxy"
+    description: 28-day log growth in App Store rating count minus universe median (proxy for user growth).
+
+# Equal weights until a validation run approves data-driven weights.
+weights: equal
+
+# Score bands for the bullish/bearish label (opportunity score is a percentile).
+bands:
+  bullish: 70
+  bearish: 30
+
+# Minimum standards before the dashboard shows a probability of beating consensus.
+calibration:
+  min_test_events: 100
+  require_brier_improvement_ci_above_zero: true

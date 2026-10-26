@@ -1,0 +1,367 @@
+# Core research universe: US-listed consumer internet & app platforms (29 companies).
+# Metadata verified 2026-10-26 against live sources (ATS endpoints, iTunes lookup,
+# Wikipedia final titles, SEC EDGAR fiscalYearEnd). See RESEARCH.md section 1.
+#
+# Excluded on purpose:
+#   SPOT  foreign private issuer (files 6-K/20-F): no 10-Q XBRL or 8-K Item 2.02,
+#         so the SEC-based earnings dates and fundamentals cannot be built.
+#   ROKU  pending acquisition by Fox (shareholders approved 2026-10-14): trades on the deal spread.
+#   BMBL  pending take-private by Ithaca Holdings at $6.05/share (announced 2026-10-13).
+#   GRPN, U  weakest fits (micro-cap; B2B with no consumer app).
+#
+# ats.provider: greenhouse | lever | ashby | smartrecruiters | workday | eightfold | custom
+#   workday token = tenant|datacenter|site (disabled unless enable_workday: true)
+#   custom = no supported public job-board API (UBER uses Oracle HCM, META and W use their own sites)
+
+benchmarks: [SPY, QQQ]
+
+companies:
+- ticker: UBER
+  name: Uber Technologies
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: custom
+    token: null
+  wikipedia:
+  - Uber
+  - Uber_Eats
+  ios_app_id: 368677368
+  notes: 'Not one of the 5 supported ATS. uber.com/careers/list 302-redirects to jobs.uber.com, whose candidate login points
+    to Oracle Recruiting Cloud (https://iaziqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/UberCareers). Third-party
+    resumegeni claims Greenhouse, but boards-api token ''uber'' '
+- ticker: LYFT
+  name: Lyft
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: lyft
+  wikipedia:
+  - Lyft
+  ios_app_id: 529379082
+  notes: Greenhouse board is fronted by CareerPuck (app.careerpuck.com/job-board/lyft); gh_jid ids match.
+- ticker: DASH
+  name: DoorDash
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: doordashusa
+  wikipedia:
+  - DoorDash
+  ios_app_id: 719972451
+  notes: Token is 'doordashusa' (US board). Separate international boards may exist; not checked.
+- ticker: CART
+  name: Maplebear (Instacart)
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: instacart
+  wikipedia:
+  - Instacart
+  ios_app_id: 545599256
+  notes: No separate 'Maplebear' Wikipedia article (url_not_found); 'Instacart' is the company article. App seller is Maplebear
+    Inc. Greenhouse meta.total = 113 on 2026-10-26.
+- ticker: ABNB
+  name: Airbnb
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: airbnb
+  wikipedia:
+  - Airbnb
+  ios_app_id: 401626263
+  notes: ''
+- ticker: EXPE
+  name: Expedia Group
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: workday
+    token: expedia|wd108|search
+  wikipedia:
+  - Expedia_Group
+  - Expedia
+  ios_app_id: 427916203
+  notes: Workday host is wd108 (unusual). Site 'search' returns Expedia Group metadata; bogus site name on same tenant returns
+    4xx. 'Expedia' wiki article covers the Expedia.com brand/subsidiary.
+- ticker: BKNG
+  name: Booking Holdings
+  segment: marketplaces_travel
+  fiscal_year_end: 12
+  ats:
+    provider: workday
+    token: priceline|wd1|BookingHoldings
+  wikipedia:
+  - Booking_Holdings
+  - Booking.com
+  ios_app_id: 367003839
+  notes: Workday site (page title 'Careers at BKNG') covers holding-company corporate roles only; found via Apply link on
+    bookingholdings.com/careers-listing. Booking.com, the largest subsidiary, hires through iCIMS (external-workingatbooking.icims.com,
+    found on jobs.booking.com), which is not a supported pr
+- ticker: ETSY
+  name: Etsy
+  segment: ecommerce
+  fiscal_year_end: 12
+  ats:
+    provider: workday
+    token: etsy|wd5|Etsy_Careers
+  wikipedia:
+  - Etsy
+  ios_app_id: 477128284
+  notes: Front end is careers.etsy.com; Workday site page title 'Etsy Careers'. Boards-api token 'etsy' returns 404. Etsy
+    agreed (Feb 15, 2026 SPA) to sell Depop to eBay for ~$1.2B; a May 21, 2026 8-K moved the expected close to end of Q3 2026.
+- ticker: EBAY
+  name: eBay
+  segment: ecommerce
+  fiscal_year_end: 12
+  ats:
+    provider: workday
+    token: ebay|wd5|apply
+  wikipedia:
+  - EBay
+  ios_app_id: 282614216
+  notes: Canonical URL ebay.wd5.myworkdayjobs.com/apply returns eBay Inc. metadata; bogus site returns 4xx. Buying Depop from
+    Etsy (see ETSY).
+- ticker: CHWY
+  name: Chewy
+  segment: ecommerce
+  fiscal_year_end: 1
+  ats:
+    provider: workday
+    token: chewy|wd5|External
+  wikipedia:
+  - Chewy_(company)
+  ios_app_id: 1149449468
+  notes: 52/53-week fiscal year ending late Jan/early Feb. SEC currently lists fiscalYearEnd 0201 (FY ended Feb 1, 2026).
+    A prior FY ended Jan 28, 2024. Encoded as month 1; Q4 reports land in March. Workday site 'chewycareers' returns 4xx;
+    'External' is correct.
+- ticker: W
+  name: Wayfair
+  segment: ecommerce
+  fiscal_year_end: 12
+  ats:
+    provider: custom
+    token: null
+  wikipedia:
+  - Wayfair
+  ios_app_id: 836767708
+  notes: UNRESOLVED. Jobs are hosted on wayfair.com/careers/job/<slug>/<id>, and apply links are obfuscated. Links carry a
+    gh_src= parameter, which hints at a Greenhouse backend, but boards-api tokens wayfair, wayfair1, wayfairinc and wayfaircareers
+    all return 404. Lever 'wayfair' returns 404. SmartRecruiter
+- ticker: FIGS
+  name: FIGS, Inc.
+  segment: ecommerce
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: figs15
+  wikipedia:
+  - Figs_(company)
+  ios_app_id: 1503374453
+  notes: Token is 'figs15', not 'figs' (404). Found via job-boards.greenhouse.io/embed/job_app?for=figs15. Jobs link to wearfigs.com/pages/jobs?gh_jid=.
+    meta.total = 20.
+- ticker: PINS
+  name: Pinterest
+  segment: social_ads
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: pinterest
+  wikipedia:
+  - Pinterest
+  ios_app_id: 429047995
+  notes: PayPal-Pinterest takeover reports found in search date from Oct 2021, not 2026.
+- ticker: SNAP
+  name: Snap Inc.
+  segment: social_ads
+  fiscal_year_end: 12
+  ats:
+    provider: workday
+    token: snapchat|wd1|snap
+  wikipedia:
+  - Snap_Inc.
+  - Snapchat
+  ios_app_id: 447188370
+  notes: Front end is careers.snap.com. Workday canonical snapchat.wd1.myworkdayjobs.com/snap returns Snap careers metadata;
+    bogus site returns 4xx.
+- ticker: RDDT
+  name: Reddit
+  segment: social_ads
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: reddit
+  wikipedia:
+  - Reddit
+  ios_app_id: 1064216828
+  notes: ''
+- ticker: META
+  name: Meta Platforms
+  segment: social_ads
+  fiscal_year_end: 12
+  ats:
+    provider: custom
+    token: null
+  wikipedia:
+  - Meta_Platforms
+  - Facebook
+  - Instagram
+  ios_app_id: 284882215
+  notes: 'Likely custom: jobs live at metacareers.com/jobs/<id>, resumegeni calls it a ''proprietary'' platform, and boards-api
+    token ''meta'' returns 404. hireflow.net claims Greenhouse, but its text is generic boilerplate. metacareers.com could
+    not be fetched, so this is unconfirmed. iOS: Facebook 284882215 (fl'
+- ticker: MTCH
+  name: Match Group
+  segment: consumer_apps
+  fiscal_year_end: 12
+  ats:
+    provider: lever
+    token: matchgroup
+  wikipedia:
+  - Match_Group
+  - Tinder_(app)
+  - Hinge_(app)
+  ios_app_id: 547702041
+  notes: Flagship app is Tinder (547702041, seller Tinder LLC). Alt is Hinge (595287172). Brand-level ATS boards for Tinder/Hinge
+    may exist; not checked.
+- ticker: DUOL
+  name: Duolingo
+  segment: consumer_apps
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: duolingo
+  wikipedia:
+  - Duolingo
+  ios_app_id: 570060128
+  notes: Greenhouse meta.total = 60 on 2026-10-26. Company and product share one Wikipedia article.
+- ticker: PTON
+  name: Peloton Interactive
+  segment: consumer_apps
+  fiscal_year_end: 6
+  ats:
+    provider: greenhouse
+    token: peloton
+  wikipedia:
+  - Peloton_Interactive
+  ios_app_id: 792750948
+  notes: Fiscal year ends June 30 (SEC fiscalYearEnd 0630). Greenhouse meta.total = 59.
+- ticker: HIMS
+  name: Hims & Hers Health
+  segment: consumer_apps
+  fiscal_year_end: 12
+  ats:
+    provider: ashby
+    token: hims-and-hers
+  wikipedia:
+  - Hims_&_Hers_Health
+  ios_app_id: 1455690574
+  notes: 'Wikipedia URL form is Hims_%26_Hers_Health. Alt iOS app is ''Hers: Women''s Healthcare'' (1623878709); both apps''
+    seller is Hims, Inc. (CA).'
+- ticker: NFLX
+  name: Netflix
+  segment: consumer_apps
+  fiscal_year_end: 12
+  ats:
+    provider: eightfold
+    token: explore.jobs.netflix.net|netflix.com
+  wikipedia:
+  - Netflix
+  ios_app_id: 363590051
+  notes: 'Not one of the 5 supported ATS. Eightfold-powered (explore.jobs.netflix.net, config links netflix.eightfold.ai).
+    Public JSON endpoint verified: count = 389 positions on 2026-10-26. Paginate with &start=N.'
+- ticker: RBLX
+  name: Roblox Corporation
+  segment: consumer_apps
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: roblox
+  wikipedia:
+  - Roblox_Corporation
+  - Roblox
+  ios_app_id: 431946152
+  notes: ''
+- ticker: DKNG
+  name: DraftKings
+  segment: consumer_apps
+  fiscal_year_end: 12
+  ats:
+    provider: workday
+    token: draftkings|wd1|DraftKings
+  wikipedia:
+  - DraftKings
+  ios_app_id: 1375031369
+  notes: 'Page title ''Careers at DraftKings''; bogus site returns 4xx. Boards-api token ''draftkings'' returns 404. Flagship
+    app is ''DraftKings: Sports & Casino''. Alt is ''DraftKings Fantasy Sports'' (710535379).'
+- ticker: HOOD
+  name: Robinhood Markets
+  segment: fintech
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: robinhood
+  wikipedia:
+  - Robinhood_Markets
+  ios_app_id: 938003185
+  notes: '''Robinhood_(company)'' redirects to Robinhood_Markets.'
+- ticker: COIN
+  name: Coinbase Global
+  segment: fintech
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: coinbase
+  wikipedia:
+  - Coinbase
+  ios_app_id: 886427730
+  notes: ''
+- ticker: AFRM
+  name: Affirm Holdings
+  segment: fintech
+  fiscal_year_end: 6
+  ats:
+    provider: greenhouse
+    token: affirm
+  wikipedia:
+  - Affirm_Holdings
+  ios_app_id: 967040652
+  notes: Fiscal year ends June 30 (SEC fiscalYearEnd 0630).
+- ticker: SOFI
+  name: SoFi Technologies
+  segment: fintech
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: sofi
+  wikipedia:
+  - SoFi
+  ios_app_id: 1191985736
+  notes: ''
+- ticker: LMND
+  name: Lemonade, Inc.
+  segment: fintech
+  fiscal_year_end: 12
+  ats:
+    provider: ashby
+    token: lemonade
+  wikipedia:
+  - Lemonade,_Inc.
+  ios_app_id: 1055653645
+  notes: Insurtech. Classified as fintech.
+- ticker: TOST
+  name: Toast, Inc.
+  segment: fintech
+  fiscal_year_end: 12
+  ats:
+    provider: greenhouse
+    token: toast
+  wikipedia:
+  - Toast,_Inc.
+  ios_app_id: 1362180579
+  notes: Business is B2B restaurant POS/SaaS. The iOS app 'Toast - Local Restaurants' is the consumer ordering app, not a
+    core revenue driver, so treat app-rank signal as weak.

@@ -1,0 +1,51 @@
+# earnsignal runtime settings. Paths are relative to the project root.
+
+db_path: data/earnsignal.db
+
+# Universe files in config/, core first. Drop universe_extended.yaml to work
+# with the 29 hand-verified companies only.
+universe_files: [universe.yaml, universe_extended.yaml]
+cache_dir: data/cache
+
+# REQUIRED for SEC EDGAR and Wikimedia (both require a descriptive User-Agent
+# with contact details). Set it here or via the EARNSIGNAL_CONTACT environment
+# variable, e.g.  EARNSIGNAL_CONTACT="Jane Doe jane@example.com"
+contact: ""
+
+# Requests per second per host. SEC's fair-access ceiling is 10/s; stay below it.
+rate_limits:
+  www.sec.gov: 5
+  data.sec.gov: 5
+  wikimedia.org: 10
+  boards-api.greenhouse.io: 2
+  api.lever.co: 2
+  api.ashbyhq.com: 2
+  api.smartrecruiters.com: 2
+  query.wikidata.org: 1
+  itunes.apple.com: 1
+  api.tiingo.com: 0.5
+  rss.marketingtools.apple.com: 1
+  default: 1
+
+# Earliest date for historical collection and backtests.
+history_start: "2016-01-01"
+
+# Insider (Form 3/4/5) structured datasets: first year to download (each
+# quarter is a 10-60 MB zip from sec.gov).
+insider_start_year: 2018
+
+# SEC acceptanceDateTime is true UTC; it is converted to this exchange time
+# zone to classify releases as before-open / during / after-close.
+sec_acceptance_tz: America/New_York
+
+# Events announced within this many days are "upcoming" in the rankings.
+upcoming_window_days: 45
+
+# Optional price fallbacks if Yahoo blocks or rate-limits (e.g. on cloud runners):
+#   tiingo_api_key: free account at tiingo.com (or env TIINGO_API_KEY)
+#   stooq_api_key:  stooq.com key (parameter name unverified)
+tiingo_api_key: ""
+stooq_api_key: ""
+
+# Workday career sites use an undocumented endpoint; off by default.
+enable_workday: false

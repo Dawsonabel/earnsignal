@@ -1,0 +1,65 @@
+# Extended BACKTEST universe (phase 5): more consumer-internet / digital-consumer
+# names to raise the number of historical announcements. With ~29 companies the
+# test set holds roughly 400-500 events, which can only detect a rank IC of
+# about 0.09-0.10; realistic alternative-data ICs are 0.02-0.05 (RESEARCH.md).
+#
+# These entries carry only ticker, name and segment. Wikipedia titles are
+# resolved automatically from Wikidata (ticker -> article) at collection time;
+# no job-board or App Store metadata, so prospective signals stay core-only.
+#
+# Not hand-verified like the core list: any ticker that has changed, been
+# acquired or delisted is logged by the collector and skipped. Excluded on
+# purpose: foreign private issuers (no 10-Q / 8-K Item 2.02) and names known to
+# be under a pending take-private as of mid-2026 (e.g. EA).
+#
+# Survivorship bias: this list is built from companies listed in 2026, and free
+# price data for delisted stocks is generally unavailable. Treat backtest
+# results as optimistic for that reason.
+
+companies:
+  # marketplaces & travel
+  - {ticker: TRIP, name: Tripadvisor, segment: marketplaces_travel}
+  - {ticker: CVNA, name: Carvana, segment: marketplaces_travel}
+  - {ticker: CARG, name: CarGurus, segment: marketplaces_travel}
+  - {ticker: CARS, name: Cars.com, segment: marketplaces_travel}
+  - {ticker: OPEN, name: Opendoor Technologies, segment: marketplaces_travel}
+  - {ticker: Z, name: Zillow Group, segment: marketplaces_travel}
+  - {ticker: ANGI, name: Angi Inc., segment: marketplaces_travel}
+  - {ticker: YELP, name: Yelp, segment: marketplaces_travel}
+  # e-commerce
+  - {ticker: AMZN, name: Amazon, segment: ecommerce}
+  - {ticker: MELI, name: MercadoLibre, segment: ecommerce}
+  - {ticker: CPNG, name: Coupang, segment: ecommerce}
+  - {ticker: RVLV, name: Revolve Group, segment: ecommerce}
+  - {ticker: WRBY, name: Warby Parker, segment: ecommerce}
+  - {ticker: REAL, name: The RealReal, segment: ecommerce}
+  - {ticker: TDUP, name: ThredUp, segment: ecommerce}
+  - {ticker: BYON, name: Beyond Inc., segment: ecommerce}
+  - {ticker: GDRX, name: GoodRx, segment: ecommerce}
+  # social, media & advertising
+  - {ticker: GOOGL, name: Alphabet, segment: social_ads}
+  - {ticker: TTD, name: The Trade Desk, segment: social_ads}
+  - {ticker: APP, name: AppLovin, segment: social_ads}
+  - {ticker: MGNI, name: Magnite, segment: social_ads}
+  - {ticker: PUBM, name: PubMatic, segment: social_ads}
+  - {ticker: DV, name: DoubleVerify, segment: social_ads}
+  - {ticker: ZD, name: Ziff Davis, segment: social_ads}
+  - {ticker: IAC, name: IAC Inc., segment: social_ads}
+  - {ticker: NRDS, name: NerdWallet, segment: social_ads}
+  # consumer apps, media & gaming
+  - {ticker: SIRI, name: Sirius XM, segment: consumer_apps}
+  - {ticker: CHGG, name: Chegg, segment: consumer_apps}
+  - {ticker: COUR, name: Coursera, segment: consumer_apps}
+  - {ticker: GRND, name: Grindr, segment: consumer_apps}
+  - {ticker: TTWO, name: Take-Two Interactive, segment: consumer_apps, fiscal_year_end: 3}
+  - {ticker: PLTK, name: Playtika, segment: consumer_apps}
+  - {ticker: RSI, name: Rush Street Interactive, segment: consumer_apps}
+  - {ticker: NYT, name: The New York Times Company, segment: consumer_apps}
+  # fintech
+  - {ticker: PYPL, name: PayPal, segment: fintech}
+  - {ticker: XYZ, name: Block Inc., segment: fintech}
+  - {ticker: UPST, name: Upstart, segment: fintech}
+  - {ticker: MQ, name: Marqeta, segment: fintech}
+  - {ticker: LC, name: LendingClub, segment: fintech}
+  - {ticker: ROOT, name: Root Inc., segment: fintech}
+  - {ticker: DAVE, name: Dave Inc., segment: fintech}
